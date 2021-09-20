@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "2.14.0"
-    }
-  }
-}
-
-provider "docker" {
-
-}
-
 resource "random_string" "random" {
   count   = var.container_count
   length  = 6
@@ -31,27 +18,4 @@ resource "docker_container" "docusaurus-zup" {
     internal = var.internal_port
     external = var.external_port
   }
-}
-
-output "container_name" {
-  value = docker_container.docusaurus-zup[*].name
-}
-
-output "ip_address" {
-  value = [for i in docker_container.docusaurus-zup[*] : join(":", [i.ip_address], i.ports[*]["external"])]
-}
-
-variable "container_count" {
-  type    = number
-  default = 1
-}
-
-variable "external_port" {
-  type    = number
-  default = 3000
-}
-
-variable "internal_port" {
-  type    = number
-  default = 3000
 }
