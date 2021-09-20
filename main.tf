@@ -12,7 +12,7 @@ provider "docker" {
 }
 
 resource "random_string" "random" {
-  count   = 2
+  count   = var.container_count
   length  = 6
   special = false
   upper   = false
@@ -23,12 +23,13 @@ resource "docker_image" "docusaurus-zup" {
 }
 
 resource "docker_container" "docusaurus-zup" {
-  count = 2
+  count = var.container_count
   name  = join("-", ["docusaurus-zup", random_string.random[count.index].result])
   image = docker_image.docusaurus-zup.latest
 
   ports {
-    internal = 3000
+    internal = var.internal_port
+    external = var.external_port
   }
 }
 
@@ -38,4 +39,19 @@ output "container_name" {
 
 output "ip_address" {
   value = [for i in docker_container.docusaurus-zup[*] : join(":", [i.ip_address], i.ports[*]["external"])]
+}
+
+variable "container_count" {
+  type    = number
+  default = 1
+}
+
+variable "external_port" {
+  type    = number
+  default = 3000
+}
+
+variable "internal_port" {
+  type    = number
+  default = 3000
 }
