@@ -4,15 +4,15 @@ resource "random_string" "random" {
   special = false
   upper   = false
 }
-
-resource "docker_image" "docusaurus-zup" {
-  name = lookup(var.image, terraform.workspace)
+module "image" {
+  source       = "./image"
+  image_stored = var.image[terraform.workspace]
 }
 
 resource "docker_container" "docusaurus-zup" {
   count = local.container_count
   name  = join("-", ["docusaurus-zup", terraform.workspace, random_string.random[count.index].result])
-  image = docker_image.docusaurus-zup.latest
+  image = module.image.image_module
 
   ports {
     internal = var.internal_port
