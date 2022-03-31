@@ -1,4 +1,4 @@
 
 output "image_module" {
-  value = docker_image.docusaurus-zup.latest
+  value = docker_image.image_type.latest
 }

@@ -14,3 +14,7 @@ variable "internal_stored" {
 variable "external_stored" {
 
 }
+
+variable "count_stored" {
+
+}
